@@ -1,5 +1,5 @@
 // Dependencies
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 // Environment
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -10,43 +10,46 @@ import pkg from '../../package.json';
 export default type => {
   const rules = [
     {
-      test: /\.js$/,
-      use: {
-        loader: 'babel-loader',
-        query: {
-          presets: [
-            [
-              'env', {
-                modules: false,
-                node: pkg.engines.node,
-                browsers: pkg.browserslist
-              }
-            ]
-          ]
-        }
-      },
-      exclude: /node_modules/
+      test: /.(js)$/,
+      exclude: /node_modules/,
+      use: 'babel-loader'
     }
   ];
 
   if (!isDevelopment || type === 'server') {
     rules.push({
-      test: /\.scss$/,
-      use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: [
-          'css-loader?minimize=true&modules=true&localIdentName=[name]__[local]',
-          'sass-loader'
-        ]
-      })
+      test: /.scss$/,
+      use: [
+        MiniCssExtractPlugin.loader,
+        {
+          loader: 'css-loader',
+          options: {
+            modules: true,
+            localIdentName: '[name]_[local]_[hash:base64]',
+            sourceMap: true
+          }
+        },
+        'sass-loader',
+      ]
     });
   } else {
     rules.push({
-      test: /\.scss$/,
+      test: /.scss$/, // Can be: .scss or .styl or .less
       use: [
-        'style-loader',
-        'css-loader?minimize=true&modules=true&localIdentName=[name]__[local]',
-        'sass-loader'
+        {
+          loader: 'style-loader'
+        },
+        {
+          loader: 'css-loader',
+          options: {
+            modules: true,
+            localIdentName: '[name]_[local]_[hash:base64]',
+            sourceMap: true
+          }
+        },
+        {
+          loader: 'sass-loader' // sass-loader or stylus-loader or less-loader
+        }
       ]
     });
   }

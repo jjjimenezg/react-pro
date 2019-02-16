@@ -1,6 +1,6 @@
 // Dependencies
 import CompressionPlugin from 'compression-webpack-plugin';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
@@ -13,8 +13,9 @@ const isAnalyzer = process.env.ANALYZER === 'true';
 export default type => {
   const plugins = [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new ExtractTextPlugin({
-      filename: '../../public/css/style.css'
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css'
     })
   ];
 
@@ -22,15 +23,6 @@ export default type => {
     plugins.push(
       new BundleAnalyzerPlugin({
         analyzerMode: 'static'
-      })
-    );
-  }
-
-  if (type === 'client') {
-    plugins.push(
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor',
-        minChunks: m => /node_modules/.test(m.context)
       })
     );
   }

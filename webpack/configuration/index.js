@@ -4,6 +4,7 @@ import devtool from './devtool';
 import entry from './entry';
 import extensions from './extensions';
 import externals from './externals';
+import optimization from './optimization';
 import modules from './modules';
 import name from './name';
 import output from './output';
@@ -18,6 +19,7 @@ export {
   extensions,
   externals,
   modules,
+  optimization,
   name,
   output,
   plugins,
